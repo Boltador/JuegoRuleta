@@ -35,27 +35,32 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
         $jugadores = $em->getRepository('ApuestasBundle:Jugador')->findAll();
 
-        if(!isset($_SESSION['estado'])){
-            $_SESSION['estado'] = 1;
-            foreach ($jugadores as $jugador) {
-                if($jugador->getDinero() > 10000){
-                    $jugador->setDineroEnJuego('10000');
-                    $jugador->setDinero($jugador->getDinero() - 10000);
-                } elseif ($jugador->getDinero() <= 10000 && $jugador->getDinero() > 0) {
-                    $jugador->setDineroEnJuego($jugador->getDinero());
-                    $jugador->setDinero('0');
-                } elseif ($jugador->getDinero() == 0){
-                    $jugador->setDineroEnJuego('0');
-                }
+        if(empty($jugadores)){
+           $this->setMensaje("error", "No hay jugadores creados");
+           return $this->redirect($this->generateUrl('inicio'));
+       }
+
+       if(!isset($_SESSION['estado'])){
+        $_SESSION['estado'] = 1;
+        foreach ($jugadores as $jugador) {
+            if($jugador->getDinero() > 10000){
+                $jugador->setDineroEnJuego('10000');
+                $jugador->setDinero($jugador->getDinero() - 10000);
+            } elseif ($jugador->getDinero() <= 10000 && $jugador->getDinero() > 0) {
+                $jugador->setDineroEnJuego($jugador->getDinero());
+                $jugador->setDinero('0');
+            } elseif ($jugador->getDinero() == 0){
+                $jugador->setDineroEnJuego('0');
             }
-            $em->flush();
-
         }
+        $em->flush();
 
-        return $this->render('ApuestasBundle:Default:juego.html.twig', array(
-          'jugadores' => $jugadores
-          ));
     }
+
+    return $this->render('ApuestasBundle:Default:juego.html.twig', array(
+      'jugadores' => $jugadores
+      ));
+}
 
     /**
      * @Route("/girar-ruleta", name="girar_ruleta")
@@ -165,5 +170,16 @@ class DefaultController extends Controller
         $response = new Response(\json_encode(true));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
+    }
+
+    /**
+     * Colocar un mensaje como flashbag. 
+     * En la vista se mostrara el mensaje que corresponda a la acción que se ha ejecutado previamente en el sistema.
+     * 
+     * @param type $tipo (error, warning, success)
+     * @param type $mensaje el mensaje correspondiente
+     */
+    public function setMensaje($tipo, $mensaje) {
+        $this->get('session')->getFlashBag()->add($tipo, $mensaje);
     }
 }

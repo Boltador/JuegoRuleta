@@ -1,26 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
-    <title>{% block title %}Juego de Apuestas{% endblock %}</title>
-    {% block stylesheets %}
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/font-awesome.css') }}" rel="stylesheet" />
-    {% endblock %}
+  <meta charset="UTF-8" />
+  <title>{% block title %}Juego de Apuestas{% endblock %}</title>
+  {% block stylesheets %}
+  <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/font-awesome.css') }}" rel="stylesheet" />
+  {% endblock %}
 
-    <script src="{{ asset('js/jquery-2.1.1.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/jquery.validate.js') }}"></script>
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+  <script src="{{ asset('js/jquery-2.1.1.min.js') }}"></script>
+  <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+  <script src="{{ asset('js/jquery.validate.js') }}"></script>
+  <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 </head>
 
 <body>
-    <nav class="navbar navbar-default">
-        <center>
-            <h3>Juego de Apuestas</h3>
-        </center>
-    </nav>
-    {% block body %}
-    {% endblock %}
+  <nav class="navbar navbar-default">
+    <center>
+      <h3>Juego de Apuestas</h3>
+    </center>
+  </nav>
+  <div class="container">
+    {% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+      <i class="fa fa-check-circle"></i> {{ flashMessage|raw }}
+    </div>   
+    {% endfor %}
+    {% for flashMessage in app.session.flashbag.get('warning') %}
+    <div class="alert alert-warning alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+      <i class="fa fa-warning"></i> {{ flashMessage|raw }}
+    </div>   
+    {% endfor %}
+    {% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+      <i class="fa fa-times-circle"></i> {{ flashMessage|raw }}
+    </div>   
+    {% endfor %}
+  </div>
+  {% block body %}
+  {% endblock %}
 </body>
 </html>
