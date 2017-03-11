@@ -17,7 +17,7 @@
                 ">
                 <div class="form-inline">
                     <a href="/app_dev.php/juego"><button type="button" class="btn btn-danger">   ¡JUGAR! </button></a>&nbsp; // &nbsp;
-                    <strong>Estado:</strong> Sin Jugar                    </div>
+                    <strong>Estado:</strong>{% if estado == 1 %} En Juego{% else %} Sin Jugar{% endif %}                    </div>
                 </div>
             </div>   
         </div>

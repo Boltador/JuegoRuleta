@@ -14,7 +14,12 @@ Este proyecto fue realizado en PHP utilizando Symfony y en Javascript.
 
 -Para conectar con la base de datos debemos modificar el archivo parameters.yml que se encuentra en la carpeta app/config del proyecto y modificar los datos de conexión a la BD.
 
-NOTA: El enlace de ingreso si está montando en servidor local es http://localhost/ProyectoRuleta/app_dev.php 
+NOTA: El enlace de ingreso si está montando en servidor local:
+
+- http://localhost/ProyectoRuleta/app_dev.php  ----> Para entorno de desarrollo
+
+- http://localhost/ProyectoRuleta/app.php  ----> Para entorno de producción
+
 
 # Recomendaciones
 
