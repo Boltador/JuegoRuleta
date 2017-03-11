@@ -8,11 +8,13 @@ Este proyecto fue realizado en PHP utilizando Symfony y en Javascript.
 
 -Se debe de tener un entorno web instalado en el equipo donde incluya Apache2, PHP 7.0 y MySQL o tener instalado XAMPP (Windows) o LAMPP (Linux).
 
--Si se está usando Linux o Unix se deben de dar permisos 777 a las carpetas app/cache y app/logs del proyecto, de igual manera asignarles dueño con el usuario que se esté trabajando.
+-Si se está usando Linux o Unix se deben de dar permisos 777 a las carpetas app/cache y app/logs del proyecto.
 
 -La base de datos se anexa en la raíz del proyecto como un archivo .SQL lista para ser importada.
 
--Para conectar con la base de datos debemos modificar el archivo parameters.yml que se encuentra en la carpeta app/config del proyecto y modificar los datos de conexión a la BD. 
+-Para conectar con la base de datos debemos modificar el archivo parameters.yml que se encuentra en la carpeta app/config del proyecto y modificar los datos de conexión a la BD.
+
+NOTA: El enlace de ingreso si está montando en servidor local es http://localhost/ProyectoRuleta/app_dev.php 
 
 # Recomendaciones
 
@@ -24,4 +26,4 @@ Este proyecto fue realizado en PHP utilizando Symfony y en Javascript.
     
     - Entorno de Producción: php app/console cache:clear --env prod
     
-Posiblemente se necesiten permisos root para ejecutar estas acciones por lo tanto debemos de volver a dar permisos y cambiar de dueño a las carpetas de cache y logs indicadas anteriormente.
+Posiblemente se necesiten permisos root para ejecutar estas acciones por lo tanto debemos de volver a dar permisos a las carpetas de cache y logs indicadas anteriormente.
