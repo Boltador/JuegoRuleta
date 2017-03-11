@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span>       Jugadores</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4 pull-left">
+                    <div class="form-inline">
+                        <a href="/app_dev.php/jugador/new"><button type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span>   Crear Jugador</button></a>
+                    </div>
+                </div>
+                <div class="col-md-4 col-md-offset-1
+                ">
+                <div class="form-inline">
+                    <a href="/app_dev.php/juego"><button type="button" class="btn btn-danger">   ¡JUGAR! </button></a>&nbsp; // &nbsp;
+                    <strong>Estado:</strong> Sin Jugar                    </div>
+                </div>
+            </div>   
+        </div>
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th><center>Nombre Jugador</center></th>
+                    <th><center>Dinero</center></th>
+                    {% if estado == 1 %}<th><center>Dinero en Juego</center></th>{% endif %}
+                    <th><center>Acciones</center></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for jugador in jugadores %}
+                <tr>
+                    <td><center>{{ jugador.nombre }}</center></td>
+                    <td><center>$ {{ jugador.dinero }}</center></td>
+                    {% if estado == 1 %} <td><center>$ {{ jugador.dineroEnJuego }}</center></td>{% endif %}
+                    <td>
+                        <center>
+                            <a href="{{ path('jugador_edit',{'id' : jugador.id }) }}">
+                                <button type="button" class="btn btn-warning">
+                                    <span class="glyphicon glyphicon-edit"></span></button></a>
+
+                                    <button type="button" class="btn btn-danger" onclick='eliminarJugador("{{ jugador.id }}","{{ jugador.nombre }}","{{ jugador.dinero }}");' data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-remove"></span></button>
+                                </center>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">¿Desea eliminar el Jugador?</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <div class="row margin">
+                                <center>
+                                    <div style="width: 35em;">
+                                        <strong>Nombre: </strong><p id="nombre_lbl"></p>
+                                        <strong>Dinero: </strong><p id="dinero_lbl"></p>
+                                    </div>
+                                </center>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <center>
+                            <div class="col-md-7">
+                                <input type="submit" class="btn btn-primary" onclick="eliminarJugadorAction();" value="Sí" /></div>
+
+                                <div class="col-md-2"><input type="submit" class="btn btn-primary" data-dismiss="modal" aria-label="Close" value="No" /></div>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% block scripts %}
+            <script>
+                var id_jugador;
+
+                function eliminarJugador(jugador_id, nombre, dinero){
+                    $("#nombre_lbl").empty();
+                    $("#dinero_lbl").empty();
+                    $("#nombre_lbl").html(nombre);
+                    $("#dinero_lbl").html('$' + dinero);
+                    id_jugador = jugador_id;
+                }
+
+                function eliminarJugadorAction(){
+                    var data = {
+                        jugador_id: id_jugador
+                    };   
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ path("eliminar_jugador") }}',
+                        data: data,
+                        success: function(data) {
+                            location.reload();
+                        }
+                    });
+                }
+
+            </script>
+            {% endblock %}
+            {% endblock %}

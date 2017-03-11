@@ -1,0 +1,4 @@
+apuestas:
+    resource: "@ApuestasBundle/Controller/"
+    type:     annotation
+    prefix:   /

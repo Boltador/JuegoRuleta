@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span>       Crear Jugador</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="container">
+                    {{ form_start(edit_form) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group has-feedback">
+                                {{ form_label(edit_form.nombre, null, {'label_attr': {'class': 'control-label'}}) }}
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="icon-icon-smartphone"></i>
+                                    </span>
+                                    {{ form_widget(edit_form.nombre, {'attr': {'class':'form-control', 'placeholder':'Escriba el nombre del jugador'}})}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group has-feedback">
+                            {{ form_label(edit_form.dinero, null, {'label_attr': {'class': 'control-label'}}) }}
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="icon-icon-smartphone"></i>
+                                    </span>
+                                    {{ form_widget(edit_form.dinero, {'attr': {'class':'form-control', 'placeholder':'Escriba el dinero del jugador'}})}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="col-md-2">
+                        <button class="btn btn-warning" type="submit"><span class="glyphicon glyphicon-pencil"></span>  Editar</button></div>
+                        {{ form_end(edit_form) }}
+
+                        <div class="col-md-1">
+                            <a href="{{ path('inicio') }}"><button class="btn btn-info"><span class="glyphicon glyphicon-arrow-left"></span>  Volver</button></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>   
+        </div>
+    </div>
+    {% endblock %}

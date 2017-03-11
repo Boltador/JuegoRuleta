@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="container">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title"><span class="glyphicon glyphicon-dashboard"></span>      Ruleta</h3>
+		</div>
+		<div class="panel-body">
+			<form enctype="multipart/form-data" id="form_plan" action="{{ path('girar_ruleta') }}" method="POST" novalidate role="form">
+				<div class="row">
+					<div class="col-md-8">
+						<br/>
+						<table class="table table-striped table-hover table-bordered">
+							<thead>
+								<tr>
+									<th><center>Nombre Jugador</center></th>
+									<th><center>Dinero en Juego</center></th>
+									<th><center>Verde 2%</center></th>
+									<th><center>Rojo 49%</center></th>
+									<th><center>Negro 49%</center></th>
+									<th><center>Apuesta 8% - 15%</center></th>
+									<th><center>Dinero Retenido</center></th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for jugador in jugadores %}
+								<tr>
+									<td><center>{{ jugador.nombre }}</center></td>
+									<td>
+										<center>
+											{% if jugador.dineroEnJuego == 0 %}
+											Sin Dinero
+											{% else %}
+											$ {{ jugador.dineroEnJuego }}
+											{% endif %}
+										</center>
+									</td>
+									<td bgcolor="#007F06">
+										<input class='verdeContador' type="radio" name="color{{ jugador.id }}" value="1" checked="true"/>
+									</td>
+									<td bgcolor="#B60000">
+										<input class='rojoContador' type="radio" name="color{{ jugador.id }}" value="2"/>
+									</td>
+									<td bgcolor="#000000">
+										<input class='negroContador' type="radio" name="color{{ jugador.id }}" value="3"/>
+									</td>
+									<td>
+										{% if jugador.dineroEnJuego <= 1000 and jugador.dineroEnJuego > 0 %}
+										All In: $ {{ jugador.dineroEnJuego }}
+										{% elseif jugador.dineroEnJuego == 0 %}
+										Sin Dinero - <button type="button" class="btn btn-warning" onclick='llenarJugadorAction("{{ jugador.id }}");'>Llenar</button>
+										{% else %}
+										<input type="range" min="8" max="15" step="1" value="1" id="slider_monto{{ jugador.id }}" name="slider_monto{{ jugador.id }}" />
+										<input type="text" id="valor_monto{{ jugador.id }}" value="0" disabled />
+										{% endif %}
+
+									</td>
+									<td>
+										<center id="dinero_juego_{{ jugador.id }}"></center>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						<p align="justify">NOTA: Los jugadores siempre entran al juego con una cantidad de $ 10000 y dejan el resto en su banco, si para entrar tienen menos de $ 10000 entonces entran con todo lo que tengan. La apuesta es obligatoria para todos a excepción de la persona que ya no tenga dinero que tendrá la opción de llenado siempre y cuando tenga dinero en su banco.</p>
+					</div>
+					<div class="col-md-4">
+						<center>
+							<h3>Resultados</h3>
+							<hr/>
+							{% if resultados is defined %}
+							<div class="row">
+								<center>
+									<div class="col-md-8">
+										<h4>El Color Ganador es: </h4>
+									</div>
+									<div class="col-md-4" {% if color == 1 %}style="width:90px; height: 35px; background-color:#007F06;"{% elseif color == 2 %}style="width:90px; height: 35px; background-color:#B60000;"{% elseif color == 3 %}style="width:90px; height: 35px; background-color:#000000;"{% endif %}></div>
+								</center>
+							</div>
+							<table class="table table-striped table-hover table-bordered">
+								<thead>
+									<tr>
+										<th><center>Jugador</center></th>
+										<th><center>Color</center></th>
+										<th><center>Apuesta</center></th>
+										<th><center>Recompensa</center></th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for jugador in jugadores %}
+									<tr>
+										<td><center>{{ jugador.nombre }}</center></td>
+										<td {% if resultados[loop.index0]['color_apostado'] is defined %}{% if resultados[loop.index0]['color_apostado'] == 1 %}bgcolor="#007F06"{% elseif resultados[loop.index0]['color_apostado'] == 2 %}bgcolor="#B60000"{% elseif resultados[loop.index0]['color_apostado'] == 3 %}bgcolor="#000000"{% endif %}{% endif %}></td>
+										<td>{% if resultados[loop.index0]['dinero_apostado'] is defined %}$ {{ resultados[loop.index0]['dinero_apostado'] }}{% else %} -- {% endif %}</td>
+										<td>{% if resultados[loop.index0]['gano'] == 1 %} $ {{ resultados[loop.index0]['dinero_ganado'] }}{% else %} -- {% endif %}</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+							{% endif %}
+						</center>
+					</div>
+				</div>
+				<br/>
+				<div class="row">
+					<div class="col-md-2 col-md-offset-2">
+						<a href="{{ path('terminar_juego') }}"><button type="button" class="btn btn-primary">
+							<strong>Terminar Juego</strong></button></a>
+						</div>
+						<div class="col-md-2 col-md-offset-3">
+							<button type="submit" class="btn btn-success">
+								<strong>¡Girar la Ruleta!</strong></button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		{% block javascripts %}
+		<script>
+			{% for jugador in jugadores %}
+			var dinero_en_juego = '{{ jugador.dineroEnJuego }}';
+			var porcentaje = parseInt($("#slider_monto{{ jugador.id }}").val());
+			var valor_apuestas =  parseInt((dinero_en_juego * porcentaje) / 100);
+			$("#valor_monto{{ jugador.id }}").val('$ ' + valor_apuestas);
+
+			if((dinero_en_juego - valor_apuestas) > 0){
+				$("#dinero_juego_{{ jugador.id }}").html('$ ' + (dinero_en_juego - valor_apuestas));
+			} else {
+				$("#dinero_juego_{{ jugador.id }}").val(dinero_en_juego);
+			}
+
+			$('#slider_monto{{ jugador.id }}').change(function() {
+				var dinero_en_juego = '{{ jugador.dineroEnJuego }}';
+				var porcentaje = parseInt($(this).val());
+				var valor_apuestas =  parseInt((dinero_en_juego * porcentaje) / 100);
+				$("#valor_monto{{ jugador.id }}").val('$ ' + valor_apuestas);
+				$("#dinero_juego_{{ jugador.id }}").empty(); 
+				if((dinero_en_juego - valor_apuestas) > 0){
+					$("#dinero_juego_{{ jugador.id }}").html('$ ' + (dinero_en_juego - valor_apuestas));
+				} else {
+					$("#dinero_juego_{{ jugador.id }}").val(dinero_en_juego);
+				} 
+
+			});
+			{% endfor %}
+
+			function llenarJugadorAction(id_jugador){
+				var data = {
+					jugador_id: id_jugador
+				};   
+				$.ajax({
+					type: "POST",
+					url: "{{ path('llenar_jugador') }}",
+					data: data,
+					success: function(data) {
+						window.location.replace("{{ path('juego') }}");
+					}
+				});
+			}
+
+		</script>
+		{% endblock %}
+		{% endblock %}
